@@ -1,0 +1,89 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Sample access control list.
+ */
+// User can see all properties listed for sale
+rule UserAccessAllSaleProperties {
+    description: "Allow Users to access all properties listed for sale"
+    participant: "org.property.registration.User"
+    operation: ALL
+    resource: "org.property.registration.PropertyListing"
+    action: ALLOW
+}
+
+// User can access all properties
+rule UserAccessOnlyHisProperties {
+    description: "Allow Users to access only his properties"
+    participant (p): "org.property.registration.User"
+    operation: ALL
+    resource (r): "org.property.registration.Property"
+    condition: (r.owner.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+// User can access all participant list
+rule UserCanAccessAllParticipant {
+    description: "Allow Users to access all participants"
+    participant: "org.property.registration.User"
+    operation: ALL
+    resource: "org.property.registration.User"
+    action: ALLOW
+}
+
+// Deny Users View Rights Of Everything
+rule UserDenyAllViewRights {
+    description: "Deny all view rights to users"
+    participant: "org.property.registration.User"
+    operation: READ
+    resource: "org.property.registration.**"
+    action: DENY
+}
+
+// User can run all transactions
+rule UserRunAllTransactions {
+    description: "Allow Users to run all transactions"
+    participant: "org.property.registration.User"
+    operation: ALL
+    resource: "org.property.registration.**"
+    action: ALLOW
+}
+
+// Participants Can View Composer System
+rule ParticipantSystemAccess {
+    description: "Grant new users access to composer system"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+// Network Admin User has access to all
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+// Network Admin System has access to all
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
